@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquivo do Concreto</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #1a1a1a;
+  --dark: #2c2c2c;
+  --rust: #C84B2F;
+  --rust-dark: #A33B22;
+  --cream: #F0EDE8;
+  --white: #ffffff;
+  --gray: #666;
+  --border: #d8d4ce;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--black); font-size: 15px; line-height: 1.65; }
+
+/* NAV */
+nav { background: var(--black); display: flex; align-items: center; padding: 0 40px; height: 56px; position: sticky; top: 0; z-index: 100; }
+.nav-logo { color: var(--white); font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; line-height: 1.25; text-transform: uppercase; flex-shrink: 0; cursor: pointer; }
+.nav-links { display: flex; gap: 56px; margin-left: auto; list-style: none; }
+.nav-links a { color: var(--rust); text-decoration: none; font-size: 11.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; cursor: pointer; }
+.nav-links a:hover { color: var(--white); }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ======= HOME ======= */
+.hero { padding: 56px 40px 0; background: var(--cream); }
+.hero h1 { font-size: clamp(34px, 5.5vw, 58px); font-weight: 800; line-height: 1.05; color: var(--rust); text-transform: uppercase; max-width: 600px; margin-bottom: 40px; letter-spacing: -0.01em; }
+.hero-image-wrap { position: relative; max-width: 460px; margin: 0 auto; }
+.corner { position: absolute; width: 28px; height: 28px; z-index: 2; }
+.corner-tl { top:-5px; left:-5px; border-top:3px solid var(--black); border-left:3px solid var(--black); }
+.corner-tr { top:-5px; right:-5px; border-top:3px solid var(--black); border-right:3px solid var(--black); }
+.corner-bl { bottom:-5px; left:-5px; border-bottom:3px solid var(--black); border-left:3px solid var(--black); }
+.corner-br { bottom:-5px; right:-5px; border-bottom:3px solid var(--black); border-right:3px solid var(--black); }
+.hero-image-wrap img { width: 100%; display: block; object-fit: cover; height: 320px; object-position: center top; }
+
+.section-wrap { padding: 52px 40px; border-top: 1px solid var(--border); }
+.section-header { display: flex; align-items: stretch; gap: 0; margin-bottom: 22px; }
+.section-bar { width: 5px; background: var(--rust); margin-right: 11px; min-height: 26px; }
+.section-title { font-size: 12.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--black); display: flex; align-items: center; }
+
+/* HERO SLIDESHOW */
+.hero-slides { position: relative; width: 100%; height: 340px; overflow: hidden; }
+.hero-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity 0.8s ease; }
+.hero-slide.active { opacity: 1; }
+.hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 5; background: rgba(0,0,0,0.45); border: none; color: #fff; width: 34px; height: 50px; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; line-height: 1; }
+.hero-arrow:hover { background: var(--rust); }
+.hero-prev { left: 0; }
+.hero-next { right: 0; }
+.hero-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 5; }
+.hero-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.45); border: none; cursor: pointer; padding: 0; transition: background 0.2s; }
+.hero-dot.active { background: #fff; }
+
+
+
+/* GALLERY GRID */
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.gallery-card { display: flex; flex-direction: column; }
+.gallery-card img { width: 100%; height: 210px; object-fit: cover; object-position: center top; display: block; margin-bottom: 11px; }
+.gallery-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--black); }
+.gallery-card p { font-size: 13px; line-height: 1.65; color: #444; flex: 1; margin-bottom: 14px; }
+.btn { display: inline-block; background: var(--rust); color: var(--white); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s; align-self: flex-start; }
+.btn:hover { background: var(--rust-dark); }
+.mais-predios-wrap { text-align: center; margin-top: 36px; }
+
+/* CONTACTOS */
+.contacto-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 28px; }
+.contacto-img-wrap { position: relative; }
+.contacto-img-wrap .corner-tl { border-color: var(--rust); }
+.contacto-img-wrap .corner-br { border-color: var(--rust); }
+.contacto-img-wrap img { width: 100%; height: 250px; object-fit: cover; object-position: center top; filter: grayscale(50%); display: block; }
+.contacto-info { background: var(--black); position: relative; overflow: hidden; min-height: 250px; display: flex; align-items: center; }
+.shape1 { position: absolute; background: var(--rust); width: 170px; height: 130px; right: -30px; top: -30px; transform: rotate(22deg); }
+.shape2 { position: absolute; background: var(--rust-dark); width: 110px; height: 70px; right: 10px; bottom: -10px; transform: rotate(10deg); }
+.shape3 { position: absolute; background: rgba(255,255,255,0.05); width: 90px; height: 90px; right: 65px; bottom: 25px; transform: rotate(-15deg); }
+.contacto-data { position: relative; z-index: 2; padding: 36px; }
+.contacto-item { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.contacto-item:last-child { margin-bottom: 0; }
+.contacto-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+.contacto-item span { color: var(--white); font-size: 13.5px; font-weight: 500; letter-spacing: 0.04em; }
+
+/* FOOTER */
+footer { background: var(--dark); padding: 36px 40px; display: flex; gap: 60px; align-items: flex-start; border-top: 3px solid #111; }
+.footer-dam { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.dam-logo { color: var(--white); font-size: 16px; font-weight: 700; letter-spacing: 0.1em; border: 2px solid var(--white); padding: 6px 10px; line-height: 1; }
+.dam-text { color: rgba(255,255,255,0.6); font-size: 9.5px; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.5; }
+.footer-right { display: flex; gap: 60px; align-items: flex-start; margin-left: auto; }
+.footer-links { display: flex; flex-direction: column; gap: 7px; }
+.footer-links a { color: var(--white); text-decoration: none; font-size: 11.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; cursor: pointer; transition: opacity 0.2s; }
+.footer-links a:hover { opacity: 1; }
+.footer-social { display: flex; gap: 8px; align-items: flex-start; }
+.social-icon { width: 27px; height: 27px; border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s; text-decoration: none; }
+.social-icon:hover { border-color: var(--rust); }
+.social-icon svg { width: 13px; height: 13px; fill: white; }
+
+/* ======= GALERIA PAGE ======= */
+.page-inner { padding: 36px 40px; min-height: 70vh; }
+.back-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--rust); color: var(--white); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px; border: none; cursor: pointer; margin-bottom: 36px; transition: background 0.2s; }
+.back-btn:hover { background: var(--rust-dark); }
+.predios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 44px 28px; }
+
+/* ======= DETALHE PAGE ======= */
+.detalhe-inner { padding: 32px 40px 56px; max-width: 960px; }
+.detalhe-title { font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 14px; }
+.detalhe-meta { margin-bottom: 28px; }
+.detalhe-meta p { font-size: 13px; color: #444; line-height: 1.7; }
+.detalhe-meta strong { color: var(--black); }
+
+/* Main two-col layout: img left, first text right */
+.detalhe-top { display: grid; grid-template-columns: 280px 1fr; gap: 32px; margin-bottom: 28px; align-items: start; }
+.detalhe-top img { width: 100%; object-fit: cover; object-position: center top; display: block; }
+.detalhe-top-text p { font-size: 13.5px; line-height: 1.8; color: #333; }
+
+/* Full-width text blocks */
+.detalhe-body p { font-size: 13.5px; line-height: 1.8; color: #333; margin-bottom: 22px; }
+
+/* Mid two-col: text left, img right */
+.detalhe-mid { display: grid; grid-template-columns: 1fr 280px; gap: 32px; margin: 22px 0; align-items: start; }
+.detalhe-mid img { width: 100%; object-fit: cover; object-position: center top; display: block; }
+.detalhe-mid-text p { font-size: 13.5px; line-height: 1.8; color: #333; }
+
+/* Bottom two-col: img left, text right */
+.detalhe-bottom { display: grid; grid-template-columns: 280px 1fr; gap: 32px; margin: 22px 0; align-items: start; }
+.detalhe-bottom img { width: 100%; object-fit: cover; object-position: center top; display: block; }
+.detalhe-bottom-text p { font-size: 13.5px; line-height: 1.8; color: #333; }
+
+/* ======= FINAL SLIDESHOW - architectural frame style ======= */
+.detalhe-final { margin-top: 52px; margin-bottom: 20px; padding: 0 40px; }
+.arch-frame { position: relative; }
+
+/* Outer frame lines - top & bottom bars */
+.arch-frame-top, .arch-frame-bottom { display: flex; align-items: center; gap: 0; height: 20px; }
+.arch-line { flex: 1; height: 2px; background: var(--black); }
+.arch-col { width: 18px; height: 20px; display: flex; gap: 4px; align-items: stretch; flex-shrink: 0; }
+.arch-col span { display: block; width: 3px; background: var(--black); }
+
+/* Sides */
+.arch-sides { display: flex; align-items: stretch; }
+.arch-side { width: 18px; display: flex; gap: 4px; flex-shrink: 0; }
+.arch-side span { display: block; width: 3px; background: var(--black); }
+
+/* Image area */
+.arch-img-wrap { position: relative; flex: 1; overflow: hidden; cursor: pointer; background: #000; }
+.arch-img-wrap img { width: 100%; height: 460px; object-fit: cover; display: block; transition: opacity 0.5s ease, transform 0.6s ease; }
+.arch-img-wrap img.slide-out { opacity: 0; transform: scale(1.04); }
+
+/* Click hint overlay */
+.arch-click-label {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  background: var(--black); color: var(--white);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 8px 28px; text-align: center; white-space: nowrap; z-index: 4;
+  pointer-events: none;
+}
+
+/* Arrows */
+.arch-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 5; background: rgba(0,0,0,0.45); border: none;
+  color: #fff; width: 36px; height: 54px; font-size: 22px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s; margin-top: -18px; line-height: 1;
+}
+.arch-arrow:hover { background: var(--rust); }
+.arch-arrow-prev { left: 0; }
+.arch-arrow-next { right: 0; }
+
+/* Dots */
+.arch-dots { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+.arch-dot { width: 7px; height: 7px; border-radius: 50%; background: #bbb; border: none; cursor: pointer; padding: 0; transition: background 0.2s; }
+.arch-dot.active { background: var(--black); }
+
+/* SOBRE page */
+.sobre-page-inner { padding: 56px 40px; max-width: 780px; }
+.sobre-page-inner h2 { font-size: 34px; font-weight: 800; text-transform: uppercase; color: var(--rust); margin-bottom: 28px; letter-spacing: -0.01em; }
+.sobre-page-inner p { font-size: 14px; line-height: 1.82; color: #333; margin-bottom: 20px; }
+
+/* CONTACTO page */
+.contacto-page-inner { padding: 56px 40px; }
+.contacto-page-inner h2 { font-size: 34px; font-weight: 800; text-transform: uppercase; color: var(--rust); margin-bottom: 36px; }
+.contacto-page-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+.cp-item { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
+.cp-icon { width: 40px; height: 40px; background: var(--rust); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cp-icon svg { width: 18px; height: 18px; fill: white; }
+.cp-text strong { display: block; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); margin-bottom: 4px; }
+.cp-text span { font-size: 14.5px; font-weight: 500; color: var(--black); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">ARQUIVO DO<br>CONCRETO</div>
+  <ul class="nav-links">
+    <li><a onclick="navTo('sobre')">SOBRE NOS</a></li>
+    <li><a onclick="navTo('galeria')">GALERIA</a></li>
+    <li><a onclick="navTo('contacto')">CONTACTO</a></li>
+  </ul>
+</nav>
+
+<!-- ========== HOME ========== -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <h1>A BELEZA DA<br>ESTRUTURA SINCERA.</h1>
+    <div class="hero-image-wrap">
+      <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+      <!-- Hero Slideshow -->
+      <div class="hero-slides" id="hero-slides">
+        <img class="hero-slide active" src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\inicial (3).jpg" alt="">
+        <img class="hero-slide" src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\inicial (1).jpg" alt="">
+        <img class="hero-slide" src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\inicial (2).jpg" alt="">
+        <img class="hero-slide" src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\Property 1=slider component 1.png" alt="">
+        <img class="hero-slide" src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\Property 1=slider component 5.png" alt="">
+        <img class="hero-slide" src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\Property 1=slider component4.png" alt="">
+        <img class="hero-slide" src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\images.jpg" alt="">
+      </div>
+      <button class="hero-arrow hero-prev" onclick="heroSlide(-1)">&#8249;</button>
+      <button class="hero-arrow hero-next" onclick="heroSlide(1)">&#8250;</button>
+      <div class="hero-dots" id="hero-dots">
+        <button class="hero-dot active" onclick="heroGo(0)"></button>
+        <button class="hero-dot" onclick="heroGo(1)"></button>
+        <button class="hero-dot" onclick="heroGo(2)"></button>
+        <button class="hero-dot" onclick="heroGo(3)"></button>
+        <button class="hero-dot" onclick="heroGo(4)"></button>
+        <button class="hero-dot" onclick="heroGo(5)"></button>
+        <button class="hero-dot" onclick="heroGo(6)"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-wrap" id="sec-sobre">
+    <div class="section-header"><div class="section-bar"></div><span class="section-title">SOBRE NOS</span></div>
+    <p class="sobre-text">Este espaço foi criado como uma plataforma de pesquisa e curadoria visual para estudantes, designers e arquitetos que buscam inspiração na arquitetura brutalista. Nosso objetivo é contar as histórias por trás dessas estruturas monumentais, servindo como uma fonte de consulta técnica onde a relação entre forma, função e materialidade é exposta de maneira clara.<br><br>Desenvolvido em cooperação com o projeto internacional SOSBrutalism, uma iniciativa do Deutsches Architekturmuseum (DAM), o arquivo atua ativamente na conscientização e salvaguarda desse patrimônio moderno. Através do compartilhamento de dados e histórias, ajudamos a mapear e proteger a memória de edifícios históricos que hoje enfrentam o risco de demolição pelo mundo.</p>
+  </section>
+
+  <section class="section-wrap" id="sec-galeria">
+    <div class="section-header"><div class="section-bar"></div><span class="section-title">GALERIA</span></div>
+    <div class="gallery-grid">
+      <div class="gallery-card">
+        <img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Torres Genex\Genex.png" alt="Torre Genex">
+        <h3>Torre Genex, Servia</h3>
+        <p>Conhecida como a "Porta Ocidental de Belgrado", esta estrutura de concreto armado é um dos maiores marcos do brutalismo socialista, unindo duas torres por uma ponte no topo.</p>
+        <button class="btn" onclick="showDetalhe('genex')">SAIBA MAIS</button>
+      </div>
+      <div class="gallery-card">
+        <img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Monumento Buzludja, Bulgária\Monumento.png" alt="Monumento Buzludja">
+        <h3>Monumento Buzludja, Bulgária</h3>
+        <p>Construído no topo de uma montanha, este monumento em formato de disco voador de concreto exibe a escala dramática do brutalismo e hoje resiste como uma ruína histórica.</p>
+        <button class="btn" onclick="showDetalhe('buzludja')">SAIBA MAIS</button>
+      </div>
+      <div class="gallery-card">
+        <img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Torre Trellick  Reino Unido\Trellick.png" alt="Torre Trellick">
+        <h3>Torre Trellick / Reino Unido</h3>
+        <p>Projetado por Ernő Goldfinger, este icónico arranha-céu residencial londrino destaca-se por sua torre de serviços totalmente separada dos apartamentos e conectada por passadiços suspensos de concreto.</p>
+        <button class="btn" onclick="showDetalhe('trellick')">SAIBA MAIS</button>
+      </div>
+    </div>
+    <div class="mais-predios-wrap">
+      <button class="btn" onclick="showPage('galeria')">MAIS PREDIOS</button>
+    </div>
+  </section>
+
+  <section class="section-wrap" id="sec-contacto">
+    <div class="section-header"><div class="section-bar"></div><span class="section-title">CONTACTOS</span></div>
+    <div class="contacto-grid">
+      <div class="contacto-img-wrap">
+        <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+        <img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Imagem da tela inicial\Barbican.png" alt="Barbican">
+      </div>
+      <div class="contacto-info">
+        <div class="shape1"></div><div class="shape2"></div><div class="shape3"></div>
+        <div class="contacto-data">
+          <div class="contacto-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+            <span>+351 909 878 764</span>
+          </div>
+          <div class="contacto-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>GERAL@ARQUIVODOCONCRETO.PT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-dam">
+      <div class="dam-logo">D·A·M</div>
+      <div class="dam-text">DEUTSCHES<br>ARCHITEKTURMUSEUM</div>
+    </div>
+    <div class="footer-right">
+      <div class="footer-links">
+        <a onclick="showPage('sobre')">SOBRE NOS</a>
+        <a onclick="showPage('galeria')">GALERIA</a>
+        <a onclick="showPage('contacto')">CONTACTOS</a>
+      </div>
+      <div class="footer-social">
+        <a class="social-icon" href="#"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+        <a class="social-icon" href="#"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>
+        <a class="social-icon" href="#"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a class="social-icon" href="#"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ========== GALERIA ========== -->
+<div id="page-galeria" class="page">
+  <div class="page-inner">
+    <button class="back-btn" onclick="showPage('home')">← VOLTAR</button>
+    <div class="predios-grid">
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Torres Genex\Genex.png" alt="Torre Genex"><h3>TORRE GENEX, SERVIA</h3><p>Conhecida como a "Porta Ocidental de Belgrado", esta estrutura de concreto armado é um dos maiores marcos do brutalismo socialista, unindo duas torres por uma ponte no topo.</p><button class="btn" onclick="showDetalhe('genex')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Monumento Buzludja, Bulgária\Monumento.png" alt="Buzludja"><h3>Monumento Buzludja, Bulgária</h3><p>Construído no topo de uma montanha, este monumento em formato de disco voador de concreto exibe a escala dramática do brutalismo e hoje resiste como uma ruína histórica.</p><button class="btn" onclick="showDetalhe('buzludja')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Torre Trellick  Reino Unido\Trellick.png" alt="Torre Trellick"><h3>Torre Trellick / Reino Unido</h3><p>Projetado por Ernő Goldfinger, este icónico arranha-céu residencial londrino destaca-se por sua torre de serviços separada dos apartamentos e conectada por passadiços suspensos de concreto.</p><button class="btn" onclick="showDetalhe('trellick')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Torres blancas\Foto blancas.png" alt="Torres Blancas"><h3>Torres Blancas / Espanha</h3><p>Projetada por Sáenz de Oíza, esta icónica torre de habitação destaca-se pelas suas formas curvas e orgânicas em betão aparente, que se expandem no topo como uma árvore.</p><button class="btn" onclick="showDetalhe('torres-blancas')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Bufalo city court\foto buffalo.png" alt="Buffalo City Court Building"><h3>Buffalo City Court Building / EUA</h3><p>Esta imponente estrutura judicial destaca-se pelas suas colunas verticais maciças de betão e fendas estreitas no lugar de janelas, projetadas para garantir a segurança das salas de tribunal.</p><button class="btn" onclick="showDetalhe('buffalo')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Torre Valesca\Foto Valasca.png" alt="Torre Velasca"><h3>Torre Velasca / Itália</h3><p>Projetada pelo estúdio BBPR, esta imponente torre milanesa reinterpreta as fortalezas medievais com uma estrutura de betão que se expande nos pisos superiores, criando uma silhueta única.</p><button class="btn" onclick="showDetalhe('velasca')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Palace of the Assembly\Foto palace.png" alt="Palace of Assembly"><h3>Palace of Assembly / Índia</h3><p>Parte do monumental complexo governamental de Chandigarh projetado por Le Corbusier, este palácio combina volumes geométricos dramáticos com uma cobertura escultural em betão bruto.</p><button class="btn" onclick="showDetalhe('palace')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Fau usp\Foto FAU.png" alt="FAU-USP"><h3>FAU-USP / Brasil</h3><p>Projetado por Vilanova Artigas e Carlos Cascaldi, este ícone do brutalismo paulista destaca-se pelo seu volume de betão suspenso e por um interior monumental totalmente integrado por rampas.</p><button class="btn" onclick="showDetalhe('fau')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Blocos F, G e I da 107 Norte\Foto blocos.png" alt="Blocos 107 Norte"><h3>Blocos F, G e I da 107 Norte / Brasil</h3><p>Projetados por Mayumi e Sérgio Souza Lima, estes blocos habitacionais em Brasília reinterpretam o brutalismo através de fachadas dinâmicas com escadas esculturais e floreiras integradas.</p><button class="btn" onclick="showDetalhe('blocos')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\habitat 67\foto Habitat.png" alt="Habitat 67"><h3>Habitat 67 / Canadá</h3><p>Projetado por Moshe Safdie para a Expo 67, este revolucionário complexo residencial é composto por 354 blocos de concreto pré-moldados que se combinam em três dimensões.</p><button class="btn" onclick="showDetalhe('habitat')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\unite d habitacion\foto Unité.png" alt="Unité d'Habitation"><h3>Unité d'Habitation / França</h3><p>Projetada por Le Corbusier, esta monumental "cidade vertical" de concreto aparente revolucionou a habitação coletiva pós-guerra, integrando apartamentos, comércio e uma cobertura pública.</p><button class="btn" onclick="showDetalhe('unite')">SAIBA MAIS</button></div>
+      <div class="gallery-card"><img src="C:\Users\gabri\OneDrive\Área de Trabalho\SITE\Predios\Barbican center\foto barbican.png" alt="Barbican Centre"><h3>Barbican Centre / Reino Unido</h3><p>Projetado por Chamberlin, Powell and Bon, este monumental complexo habitacional combina habitação, lagos e um vasto centro cultural numa fortaleza de betão bujardado à mão.</p><button class="btn" onclick="showDetalhe('barbican')">SAIBA MAIS</button></div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-dam"><div class="dam-logo">D·A·M</div><div class="dam-text">DEUTSCHES<br>ARCHITEKTURMUSEUM</div></div>
+    <div class="footer-right"><div class="footer-links"><a onclick="showPage('sobre')">SOBRE NOS</a><a onclick="showPage('galeria')">GALERIA</a><a onclick="showPage('contacto')">CONTACTOS</a></div></div>
+  </footer>
+</div>
+
+<!-- ========== DETALHE ========== -->
+<div id="page-detalhe" class="page">
+  <div class="detalhe-inner">
+    <button class="back-btn" onclick="showPage('galeria')">← VOLTAR</button>
+    <h2 class="detalhe-title" id="d-title"></h2>
+    <div class="detalhe-meta" id="d-meta"></div>
+
+    <!-- top: img left, text right -->
+    <div class="detalhe-top">
+      <img id="d-img-top" src="" alt="">
+      <div class="detalhe-top-text" id="d-text-1"></div>
+    </div>
+
+    <!-- full-width paragraphs -->
+    <div class="detalhe-body" id="d-body-1"></div>
+
+    <!-- mid: text left, img right -->
+    <div class="detalhe-mid">
+      <div class="detalhe-mid-text" id="d-text-2"></div>
+      <img id="d-img-mid" src="" alt="" style="display:none">
+    </div>
+
+    <!-- full-width paragraphs 2 -->
+    <div class="detalhe-body" id="d-body-2"></div>
+
+    <!-- bottom: img left, text right -->
+    <div class="detalhe-bottom" id="d-bottom-wrap">
+      <img id="d-img-bottom" src="" alt="">
+      <div class="detalhe-bottom-text" id="d-text-3"></div>
+    </div>
+
+    <!-- slideshow final - architectural frame -->
+    <div class="detalhe-final">
+      <div class="arch-frame">
+        <!-- top bar -->
+        <div class="arch-frame-top">
+          <div class="arch-col"><span></span><span></span></div>
+          <div class="arch-line"></div>
+          <div class="arch-col"><span></span><span></span></div>
+        </div>
+        <!-- sides + image -->
+        <div class="arch-sides">
+          <div class="arch-side"><span></span><span></span></div>
+          <div class="arch-img-wrap" id="arch-img-wrap" onclick="slideNext()">
+            <img id="arch-slide-img" src="" alt="">
+            <button class="arch-arrow arch-arrow-prev" onclick="event.stopPropagation(); slidePrev()">&#8249;</button>
+            <button class="arch-arrow arch-arrow-next" onclick="event.stopPropagation(); slideNext()">&#8250;</button>
+            <div class="arch-click-label">CLIQUE NA IMAGEM PARA MAIS</div>
+          </div>
+          <div class="arch-side"><span></span><span></span></div>
+        </div>
+        <!-- bottom bar -->
+        <div class="arch-frame-bottom">
+          <div class="arch-col"><span></span><span></span></div>
+          <div class="arch-line"></div>
+          <div class="arch-col"><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="arch-dots" id="arch-dots"></div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-dam"><div class="dam-logo">D·A·M</div><div class="dam-text">DEUTSCHES<br>ARCHITEKTURMUSEUM</div></div>
+    <div class="footer-right"><div class="footer-links"><a onclick="showPage('sobre')">SOBRE NOS</a><a onclick="showPage('galeria')">GALERIA</a><a onclick="showPage('contacto')">CONTACTOS</a></div></div>
+  </footer>
+</div>
+
+<!-- ========== SOBRE ========== -->
+<div id="page-sobre" class="page">
+  <div class="sobre-page-inner">
+    <button class="back-btn" onclick="showPage('home')">← VOLTAR</button>
+    <h2>SOBRE NOS</h2>
+    <p>Este espaço foi criado como uma plataforma de pesquisa e curadoria visual para estudantes, designers e arquitetos que buscam inspiração na arquitetura brutalista. Nosso objetivo é contar as histórias por trás dessas estruturas monumentais, servindo como uma fonte de consulta técnica onde a relação entre forma, função e materialidade é exposta de maneira clara.</p>
+    <p>Desenvolvido em cooperação com o projeto internacional SOSBrutalism, uma iniciativa do Deutsches Architekturmuseum (DAM), o arquivo atua ativamente na conscientização e salvaguarda desse patrimônio moderno. Através do compartilhamento de dados e histórias, ajudamos a mapear e proteger a memória de edifícios históricos que hoje enfrentam o risco de demolição pelo mundo.</p>
+    <p>A arquitetura brutalista surgiu após a Segunda Guerra Mundial como uma resposta à necessidade de reconstrução rápida e eficiente das cidades europeias. Caracterizada pelo uso expressivo do betão aparente (béton brut, em francês, que deu nome ao movimento), este estilo prima pela honestidade estrutural — os materiais são mostrados sem revestimentos ou disfarces, revelando a sua natureza construtiva de forma direta e poderosa.</p>
+    <p>O nosso arquivo reúne documentação fotográfica, histórica e técnica de alguns dos mais importantes edifícios brutalistas do mundo, contribuindo para a valorização e preservação deste importante capítulo da história da arquitectura do século XX.</p>
+  </div>
+  <footer>
+    <div class="footer-dam"><div class="dam-logo">D·A·M</div><div class="dam-text">DEUTSCHES<br>ARCHITEKTURMUSEUM</div></div>
+    <div class="footer-right"><div class="footer-links"><a onclick="showPage('sobre')">SOBRE NOS</a><a onclick="showPage('galeria')">GALERIA</a><a onclick="showPage('contacto')">CONTACTOS</a></div></div>
+  </footer>
+</div>
+
+<!-- ========== CONTACTO ========== -->
+<div id="page-contacto" class="page">
+  <div class="contacto-page-inner">
+    <button class="back-btn" onclick="showPage('home')">← VOLTAR</button>
+    <h2>CONTACTOS</h2>
+    <div class="contacto-page-grid">
+      <div>
+        <div class="cp-item"><div class="cp-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div><div class="cp-text"><strong>Telefone</strong><span>+351 909 878 764</span></div></div>
+        <div class="cp-item"><div class="cp-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="cp-text"><strong>Email</strong><span>geral@arquivodoconcreto.pt</span></div></div>
+      </div>
+      <img src="C:\Users\gabri\OneDrive\Área de Trabalho\site 2\predios\imagem da tela inicial\Barbican.png" alt="Barbican" style="width:100%;height:260px;object-fit:cover;object-position:center top;">
+    </div>
+  </div>
+  <footer>
+    <div class="footer-dam"><div class="dam-logo">D·A·M</div><div class="dam-text">DEUTSCHES<br>ARCHITEKTURMUSEUM</div></div>
+    <div class="footer-right"><div class="footer-links"><a onclick="showPage('sobre')">SOBRE NOS</a><a onclick="showPage('galeria')">GALERIA</a><a onclick="showPage('contacto')">CONTACTOS</a></div></div>
+  </footer>
+</div>
+
+<script>
+const buildings = {
+  genex: {
+    img: 'Predios/Torres Genex/Genex (1).jpg',
+    title: 'TORRE GENEX,',
+    meta: `Local de Construção: Belgrado, Sérvia (antiga Jugoslávia)<br>Arquitecto: Mihajlo Mitrović<br>Ano de Construção: 1980 (projeto de 1977)`,
+    t1: `<p>A história da Torre Genex, oficialmente conhecida como a Porta Ocidental de Belgrado (Zapadna Kapija Beograda), está profundamente ligada à era dourada da Jugoslávia socialista liderada por Josip Broz Tito. Nos anos 70, o regime queria demonstrar ao mundo a sua força económica e a sua posição única de neutralidade e abertura entre o Ocidente e o Oriente. O governo encomendou uma megaestrutura que funcionasse como um portal monumental para dar as boas-vindas a quem chegava à capital a partir do aeroporto. O arquitecto Mihajlo Mitrović foi o escolhido para desenhar este arranha-céus, que foi batizado com o nome do Grupo Genex, uma gigantesca e poderosa empresa estatal de comércio externo que simbolizava o orgulho económico jugoslavo.</p>`,
+    body1: `<p>A construção da Torre Genex foi uma das maiores proezas de engenharia do brutalismo tardio na Europa de Leste. Mitrović desenhou dois arranha-céus gémeos de betão armado que se erguem a uns impressionantes 115 metros de altura. O método construtivo baseou-se na fundição contínua de betão bruto aparente, exibindo de forma nua e orgânica as texturas cinzentas e as linhas estruturais do edifício. A grande reviravolta na engenharia civil foi a união das duas torres no topo: uma ponte de betão de dois andares liga os edifícios no 26º andar, sendo coroada por uma monumental e futurista estrutura giratória que se assemelha a uma cápsula espacial ou a uma torre de controlo de ficção científica, desafiando a gravidade e os ventos da região.</p>`,
+    imgMid: 'Predios/Torres Genex/Genex (6).jpg',
+    imgBottom: 'Predios/Torres Genex/Genex (10).jpg',   // COLOCA AQUI: ex: 'Predios/Torres Genex/Genex (6).jpg'
+    slides: [
+      'Predios/Torres Genex/Genex (2).jpg',  // imagem 1
+      'Predios/Torres Genex/Genex (3).jpg',  // imagem 2
+      'Predios/Torres Genex/Genex (4).jpg',  // imagem 3
+      'Predios/Torres Genex/Genex (5).jpg',  // imagem 4
+      'Predios/Torres Genex/Genex (7).jpg',  // imagem 5
+      
+    ],
+    t2: `<p>Espacialmente, a organização das plantas da Torre Genex reflecte uma divisão funcional interna absolutamente rigorosa e pioneira para a época. Embora pareçam idênticas por fora, as duas torres têm propósitos completamente diferentes nas suas plantas. A torre mais alta (de 30 andares) foi inteiramente planeada para habitação residencial coletiva, com apartamentos funcionais e geométricos destinados à classe trabalhadora e intelectuais. A torre mais baixa (de 26 andares) foi desenhada exclusivamente para escritórios comerciais e sede da empresa Genex. A circulação vertical é feita por colunas de elevadores independentes expostas na fachada como tubos cilíndricos de betão. No topo, a famosa cápsula circular foi projetada para abrigar um restaurante giratório que completava uma rotação de 360 graus a cada hora, oferecendo uma vista panorâmica sobre toda a cidade e sobre o rio Sava.</p>`,
+    body2: `<p>A trajetória da Torre Genex foi marcada por uma sucessão de reviravoltas políticas dramáticas, falhas técnicas e uma montanha-russa de críticas. A primeira grande reviravolta prática foi o restaurante giratório: devido a falhas no motor e à falta de manutenção, o mecanismo nunca chegou a funcionar regularmente, permanecendo a cápsula fechada durante décadas. Com a violenta dissolução da Jugoslávia nos anos 90, a empresa Genex faliu e a torre comercial foi completamente abandonada, sofrendo uma forte degradação. Na época e nos anos seguintes, o edifício enfrentou críticas ferozes, sendo rotulado pelos habitantes de "monstruosidade comunista", "bunker vertical" e "mamute de betão feio". Contudo, os pontos positivos residenciais foram inegáveis: a robustez do betão protegeu a estrutura ao longo das crises e os moradores da torre habitacional desenvolveram um orgulho imenso em viver num marco tão radical.</p>`,
+    t3: `<p>A Torre Genex conclui-se como um dos monumentos mais fascinantes, nostálgicos e cinematográficos do brutalismo e do futurismo socialista mundial. Mihajlo Mitrović provou que a arquitectura de betão do bloco de Leste podia ser incrivelmente ousada, expressiva e distante da monotonia soviética tradicional. Ao esculpir um portal monumental que funde a crueza do betão com o imaginário da corrida espacial, a Torre Genex — recentemente classificada como monumento cultural protegido e vendida para reabilitação — permanece como uma sentinela intemporal de uma utopia geopolítica que continua a capturar a imaginação de designers e fotógrafos de todo o mundo.</p>`
+  },
+  buzludja: {
+    img: 'Predios/Monumento Buzludja, Bulgária/monumneto  (4).jpg',         // vista aérea drone pôr do sol - topo esquerda
+    imgMid: 'Predios/Monumento Buzludja, Bulgária/monumneto  (2).jpg',      // interior nevado + mosaicos + cúpula - meio direita
+    imgBottom: 'Predios/Monumento Buzludja, Bulgária/monumneto  (7).jpg',   // interior original intacto anos 80 - baixo esquerda
+    slides: [
+      'Predios/Monumento Buzludja, Bulgária/monumneto  (6).jpg',  // vista frontal céu azul intenso
+      'Predios/Monumento Buzludja, Bulgária/monumneto  (5).jpg',  // montanha + escultura tochas em primeiro plano
+      'Predios/Monumento Buzludja, Bulgária/monumneto  (1).avif',  // disco + torre close céu azul
+      'Predios/Monumento Buzludja, Bulgária/monumneto  (1).jpg',  // drone torre + estrela vermelha
+      'Predios/Monumento Buzludja, Bulgária/Monumento.png',  // escadas entrada + visitantes
+      'Predios/Monumento Buzludja, Bulgária/monumneto  (7).jpg',  // cúpula mosaico intacta vista de baixo
+      'Predios/Monumento Buzludja, Bulgária/monumneto  (3).jpg',  // interior em ruína com mosaico parede
+      'Predios/Monumento Buzludja, Bulgária/monumneto(8).jpg',  // mosaico parede colorida close
+    ],
+    title: 'MONUMNETO BUZLUDJA',
+    meta: `Local de Construção: Monte Buzludzha, Cordilheira dos Balcãs, Bulgária<br>Arquitecto: Georgi Stoilov<br>Ano de Construção: 1981`,
+    t1: `<p>A história do Monumento de Buzludzha (oficialmente a Casa-Monumento do Partido Comunista Búlgaro) está ligada ao auge e à teatralidade do regime socialista na Bulgária durante a Guerra Fria. O governo de Todor Zhivkov desejava erguer um monumento sem precedentes para celebrar o 90º aniversário do Congresso de Buzludzha (onde o movimento socialista búlgaro fora secretamente fundado em 1891). O arquitecto Georgi Stoilov, antigo presidente da União de Arquitectos da Bulgária, foi o escolhido para liderar o projeto. O seu objetivo era monumental: erguer uma estrutura que fundisse a engenharia pesada do brutalismo com o simbolismo futurista, criando um local de peregrinação ideológica no topo de uma montanha a mais de 1.400 metros de altitude.</p>`,
+    body1: `<p>A construção de Buzludzha foi um dos maiores e mais perigosos desafios de engenharia civil da história da Europa de Leste, durando quase sete anos. Devido à localização remota e ao clima extremo do topo da montanha, assolada por ventos violentos e invernos gelados, o local teve de ser terraplanado com explosivos, reduzindo a altura do pico em 9 metros. A obra mobilizou mais de 6.000 pessoas, incluindo engenheiros civis, artistas e unidades do exército búlgaro. O monumento foi erguido inteiramente em betão armado fundido in loco. A sua arquitectura consiste num gigantesco disco elíptico que parece flutuar sobre a montanha, ladeado por uma torre monumental de betão com 70 metros de altura, decorada com duas gigantescas estrelas de vidro rubi soviético.</p>`,
+    
+    t2: `<p>Espacialmente, a organização das plantas de Buzludzha foi desenhada para criar uma experiência quase mística e teatral para os visitantes. A entrada principal fazia-se através de pórticos de betão gravados com slogans revolucionários. O coração do edifício é o Grande Salão Circular, uma arena com mais de 40 metros de diâmetro sob uma imensa cúpula de aço. As paredes circulares deste salão foram revestidas com 510 metros quadrados de mosaicos intrincados e luxuosos feitos de pedras semipreciosas, vidro e ouro, retratando a história do socialismo e os rostos de líderes como Marx, Engels e Lenine. O teto ostentava um enorme painel de mosaico com a foice e o martelo. A planta incluía ainda corredores circulares externos com janelas panorâmicas que ofereciam vistas dramáticas sobre as montanhas dos Balcãs.</p>`,
+    body2: `<p>A trajetória de Buzludzha é uma das maiores e mais dramáticas reviravoltas da história da arquitectura mundial. O monumento funcionou apenas durante oito anos; com a queda do bloco soviético e o colapso do regime comunista búlgaro em 1989, o edifício foi abandonado pelo governo e entregue ao esquecimento. O local enfrentou críticas ferozes da população búlgara, que o via como um símbolo opressivo de propaganda de um regime totalitário. O abandono absoluto resultou em décadas de vandalismo selvagem, pilhagens e destruição extrema provocada pela neve e pelo gelo, que colapsaram o teto de aço e deixaram os mosaicos expostos e em ruínas, transformando o "OVNI de betão" numa carcaça fantasmagórica.</p>`,
+    t3: `<p>O Monumento de Buzludzha conclui-se hoje como uma das ruínas modernas mais fascinantes, esteticamente avassaladoras e debatidas do planeta. Georgi Stoilov provou que o betão brutalista podia ser usado para criar uma escala quase divina e de ficção científica. Embora tenha nascido como um manifesto político polémico, a estrutura transcendeu a sua própria ideologia para se tornar num ícone global da arqueologia industrial e da "Urbex" (exploração urbana). Recentemente, através de esforços internacionais de conservação, o edifício começou a receber planos de estabilização estrutural, permanecendo como um testemunho monumental de como o betão bruto consegue imortalizar a memória, a ascensão e a queda de um império político.</p>`
+  },
+  trellick: {
+    img: 'Predios/Torre Trellick  Reino Unido/trellick (11).jpg',
+    title: 'TORRE TRELLICK',
+    meta: `Local de Construção: Londres, Reino Unido<br>Arquitecto: Ernő Goldfinger<br>Ano de Construção: 1972`,
+    t1: `<p>A história da Trellick Tower está umbilicalmente ligada ao auge e à crise do Estado de Bem-Estar Social britânico no pós-guerra. O Conselho do Grande Condado de Londres (LCC) encomendou um grande projeto de habitação social para realojar famílias de classes trabalhadoras numa zona degradada do bairro de North Kensington. O arquitecto húngaro Ernő Goldfinger, uma das figuras mais dogmáticas, geniais e temidas do modernismo europeu, foi o escolhido. Conhecido pelo seu temperamento explosivo — que inclusive inspirou o seu vizinho Ian Fleming a batizar o famoso vilão de James Bond com o seu apelido —, Goldfinger viu na Trellick Tower a oportunidade de criar a sua obra-prima: uma "máquina de morar" vertical que trouxesse o valor do espaço, da luz e do design funcional aos cidadãos comuns.</p>`,
+    body1: `<p>A construção da Trellick Tower foi uma demonstração virtuosa da engenharia do betão armado e um dos perfis mais inconfundíveis do horizonte londrino. Erguendo-se a 98 metros de altura com 31 andares, o edifício destaca-se pelo seu perfil dramático e assimétrico. A maior Proeza técnica da construção foi a separação radical das funções: Goldfinger desenhou uma torre principal para as habitações e, ao lado, uma torre de serviços esguia e vertical inteiramente em betão bruto, ligada ao bloco principal por passarelas suspensas a cada três andares. Esta torre independente abriga os elevadores, as escadas de emergência e uma enorme central técnica no topo, que se projeta para o exterior como uma gigantesca escultura brutalista em consola, evitando que o ruído e as vibrações das máquinas perturbassem os moradores.</p><p>Espacialmente, as plantas da Trellick Tower são um modelo de eficiência modular e conforto. O edifício conta com 217 apartamentos com dezenas de tipologias diferentes, desde estúdios a duplexes generosos. Para maximizar o espaço útil, Goldfinger desenhou corredores públicos (as "ruas no céu") apenas a cada três andares; os apartamentos encaixam-se por cima e por baixo destes corredores através de escadas internas, garantindo que quase todas as frações sejam "atravessantes", com dupla exposição solar e vistas magníficas sobre Londres. O design interior original era incrivelmente detalhado: incluía portas de correr para poupar espaço, janelas com vidros duplos pivotantes e um sistema de aquecimento central inovador embutido nos pisos de betão.</p>`,
+    imgMid: 'Predios/Torre Trellick  Reino Unido/trellick (7).jpg',
+    imgBottom: 'Predios/Torre Trellick  Reino Unido/trellick (2).jpg',   // COLOCA AQUI: ex: 'Predios/Torre Trellick  Reino Unido/trellick (X).jpg'
+    slides: [
+      'Predios/Torre Trellick  Reino Unido/trellick (3).jpg',  // imagem 1
+      'Predios/Torre Trellick  Reino Unido/trellick (4).jpg',  // imagem 2
+      'Predios/Torre Trellick  Reino Unido/trellick (10).jpg',  // imagem 3
+      'Predios/Torre Trellick  Reino Unido/trellick (6).jpg',  // imagem 4
+      'Predios/Torre Trellick  Reino Unido/trellick (8).jpg',  // imagem 5
+    ],
+    t2: `<p>A trajetória da Trellick Tower foi marcada por uma das mais negras e dramáticas reviravoltas da história urbana, seguida de uma ressurreição espetacular. Pouco após a inauguração, o edifício foi fustigado pela falta de policiamento, cortes de orçamento na manutenção e abandono social por parte das autoridades. O local tornou-se um ímã para o crime, assaltos e vandalismo, com os elevadores a avariarem constantemente e os toxicodependentes a ocuparem os corredores. A opinião pública e a imprensa rotularam o prédio de "O Horror de Betão" ou "A Torre do Medo", transformando a utopia de Goldfinger no símbolo máximo da falha da arquitectura brutalista e da habitação social. O próprio arquitecto ficou devastado com a destruição do seu sonho.</p>`,
+    body2: `<p>A reviravolta final da Trellick Tower foi absoluta e surpreendente. Nos anos 80 e 90, os moradores uniram-se, exigiram a instalação de um porteiro no pódio de betão, câmaras de segurança e melhorias na iluminação. Quase instantaneamente, o crime desapareceu e a torre provou que os seus problemas eram sociais, não arquitectónicos. Com o ressurgimento do interesse global pelo brutalismo, o edifício passou de "monstro odiado" a ícone de culto da cultura pop britânica, aparecendo em videoclipes, filmes e anúncios de moda. Em 1998, o governo atribuiu-lhe o estatuto de Monumento Nacional Protegido de Grau II*.</p>`,
+    t3: `<p>A Trellick Tower conclui-se como o manifesto definitivo do brutalismo heroico britânico. Ernő Goldfinger demonstrou que o betão bruto e a monumentalidade arquitectónica podiam ser colocados ao serviço da dignidade humana e do funcionalismo extremo. Ao transformar uma infraestrutura técnica de elevadores numa escultura abstrata que domina a paisagem de Londres, a Trellick Tower permanece como uma lição imutável de resiliência urbana, provando que uma boa arquitectura consegue sobreviver ao preconceito e redimir-se como um património artístico insubstituível.</p>`
+  },
+  'torres-blancas': {
+    img: 'Predios/Torres blancas/blancas (5).jpg',
+    title: 'TORRES BLANCAS',
+    meta: `Local de Construção: Madrid, Espanha<br>Arquitecto: Francisco Javier Sáenz de Oíza<br>Ano de Construção: 1969`,
+    t1: `<p>A história das Torres Blancas começa no início dos anos 60, num período em que Madrid vivia uma forte expansão urbana e económica. O promotor imobiliário Juan Huarte, conhecido pelo seu apoio à vanguarda artística espanhola, decidiu encomendar um projeto residencial que rompesse totalmente com a arquitectura tradicional e cinzenta da época do franquismo. Huarte escolheu o brilhante arquitecto Francisco Javier Sáenz de Oíza para liderar o desafio. Oíza viu nesta comissão a oportunidade de criar um manifesto vivo de "arquitectura orgânica", fortemente influenciado pelas ideias de Frank Lloyd Wright, mas aplicando-as a uma megaestrutura de alta densidade urbana que marcasse a entrada da capital espanhola.</p>`,
+    body1: `<p>A construção das Torres Blancas foi um autêntico tour de force de engenharia que desafiou os limites do betão armado na época. Ao contrário dos prédios convencionais que usam pilares e vigas internas, as Torres Blancas sustentam-se através da sua própria fachada exterior. São as paredes curvas de betão aparente que carregam todo o peso do edifício, funcionando como uma imensa casca estrutural. O método de fundição foi extremamente complexo devido à geometria cilíndrica e contínua do edifício. Os operários tiveram de moldar o betão in loco para dar forma aos volumes redondos e às varandas circulares que se expandem no topo do edifício como a copa de uma árvore, criando uma silhueta inconfundível no horizonte madrileno.</p><p>Espacialmente, a organização das plantas das Torres Blancas é uma das mais brilhantes e complexas do brutalismo mundial. Oíza rejeitou completamente o conceito de "caixa de sapatos" retangular. A torre de 23 andares é composta pelo entrelaçamento de cilindros e formas curvas, o que significa que quase não existem cantos de 90 graus no interior. As plantas dos apartamentos são orgânicas, fluidas e abrem-se para o exterior através de terraços circulares que funcionam como jardins suspensos, garantindo que a luz natural circule livremente por todas as divisões. O topo do edifício foi coroado com uma cobertura espetacular de formas sinuosas, que abriga uma piscina icónica e áreas de lazer sinuosas com vista panorâmica sobre Madrid.</p>`,
+    imgMid: 'Predios/Torres blancas/blancas (7).jpg',
+    imgBottom: 'Predios/Torres blancas/blancas (10).jpg',   // COLOCA AQUI: ex: 'Predios/Torres blancas/blancas (X).jpg'
+    slides: [
+      'Predios/Torres blancas/blancas (1).jpg',  // imagem 1
+      'Predios/Torres blancas/blancas (2).jpg',  // imagem 2
+      'Predios/Torres blancas/blancas (3).jpg',  // imagem 3
+      'Predios/Torres blancas/blancas (4).jpg',  // imagem 4
+      'Predios/Torres blancas/blancas (8).jpg',  // imagem 5
+    ],
+    t2: `<p>A história por trás do nome e da construção do edifício está cheia de reviravoltas e ironias. O plano original de Oíza e Huarte previa a construção de duas torres (daí o plural "Torres") e o betão deveria ser misturado com pó de mármore branco para que o edifício reluzisse sob o sol de Madrid (daí o nome "Blancas"). Contudo, devido a fortes restrições orçamentais e dificuldades técnicas durante a obra, a segunda torre nunca foi construída e o betão acabou por ser deixado na sua cor cinzenta natural e crua. Quando foi inaugurado, o edifício recebeu duras críticas de setores mais conservadores da sociedade, que consideravam a estética do betão bruto e as formas sinuosas demasiado agressivas, industriais e "estranhas" para o panorama residencial da cidade.</p>`,
+    body2: `<p>A reviravolta na receção pública das Torres Blancas foi absoluta. Com o passar dos anos, o edifício passou de "monstruosidade incompreendida" a um dos ícones mais celebrados e protegidos da arquitectura espanhola do século XX, tendo conquistado o Prémio de Arquitectura da Cidade de Madrid em 1974. A sua fusão única entre a crueza do brutalismo e a fluidez do organicismo provou ser incrivelmente confortável e funcional para os moradores. Hoje, os apartamentos das Torres Blancas são autênticos objetos de desejo no mercado imobiliário espanhol, habitados maioritariamente por arquitectos, designers e artistas que valorizam a sua genialidade espacial.</p>`,
+    t3: `<p>As Torres Blancas concluem-se como um dos maiores monumentos à liberdade criativa dentro do movimento brutalista. Francisco Javier Sáenz de Oíza provou ao mundo que o betão bruto não tem de ser sinónimo de rigidez, monotonia ou linhas retas opressivas. Ao esculpir uma árvore de betão cinzento que respira através de varandas orgânicas, as Torres Blancas permanecem como um testemunho poético de que a engenharia pesada e a sensibilidade da natureza podem coexistir numa harmonia arquitectónica intemporal.</p>`
+  },
+  buffalo: {
+    img: 'Predios/Bufalo city court/bufallo (2).jpg',          // vista geral urbana - topo esquerda
+    imgMid: 'Predios/Bufalo city court/bufallo (1).jpg',       // P/B torres + viaduto - meio direita
+    imgBottom: 'Predios/Bufalo city court/bufallo (3).jpg',    // escultura metálica + betão - baixo esquerda
+    slides: [
+      'Predios/Bufalo city court/bufallo (4).jpg',   // fachada frontal com bandeira
+      'Predios/Bufalo city court/bufallo (5).jpg',   // detalhe textura betão + escadas
+    ],
+    title: 'BUFFALO CITY COURT',
+    meta: `Local de Construção: Buffalo, Nova Iorque, Estados Unidos<br>Arquitecto: Pfohl, Roberts & Biggie<br>Ano de Construção: 1974`,
+    t1: `<p>A história do Buffalo City Court Building está profundamente enraizada no clima social e político tumultuoso do final dos anos 1960 e início dos anos 1970 nos Estados Unidos. Numa altura em que o país recuperava de violentos motins urbanos e protestos civis, a segurança das instituições públicas e judiciais tornou-se uma prioridade máxima para o governo. O município de Buffalo encomendou ao gabinete de arquitectura local Pfohl, Roberts & Biggie a conceção de uma nova sede que centralizasse os tribunais da cidade. A equipa de arquitectos respondeu com um design que personificava a autoridade, a impenetrabilidade e a solidez implacável que o sistema judicial exigia naquele momento histórico de crise de confiança civil.</p>`,
+    body1: `<p>A construção do edifício foi um marco de engenharia brutalista focada na moldagem de betão à escala monumental. Erguendo-se como um bloco maciço de 10 andares na Delaware Avenue, a estrutura é composta por gigantescos painéis verticais de betão armado que se projetam para a frente, criando um jogo geométrico tridimensional na fachada. A sua característica estética mais radical é a ausência quase total de janelas convencionais; no seu lugar, os arquitectos integraram fendas estreitas e verticais que dão ao edifício o aspeto de uma fortaleza ou de um castelo medieval adaptado à era moderna. Este betão cinzento e cru foi texturado para resistir não só à passagem do tempo, mas também às rigorosas e destrutivas tempestades de neve típicas do inverno do estado de Nova Iorque.</p>`,
+    
+    t2: `<p>Espacialmente, a organização das plantas do Buffalo City Court Building é ditada por uma lógica rigorosa de segregação de fluxos e isolamento funcional. O design interior foi planeado geometricamente para que o público, os prisioneiros e os juízes utilizassem circuitos de circulação totalmente independentes, garantindo que nunca se cruzassem fora das salas de audiência. As salas de tribunal ocupam o núcleo central e cego do edifício. Elas foram deliberadamente desenhadas sem qualquer janela para garantir o isolamento acústico total face ao ruído urbano, evitar qualquer distração visual externa durante os julgamentos e proteger os magistrados de potenciais ataques ou pressões do exterior. Os gabinetes e as zonas administrativas alinham-se ao longo das fendas estreitas, recebendo uma iluminação natural controlada e dramática que confere ao interior uma atmosfera de solenidade e foco absoluto.</p>`,
+    body2: `<p>A receção pública do edifício foi marcada por uma avalanche de críticas ferozes e controvérsia que dura até aos dias de hoje. Desde a sua inauguração em 1974, a população de Buffalo rotulou o edifício de "bunker cego", "prisão opressiva" ou simplesmente "o prédio mais feio da cidade". A sua volumetria agressiva e opaca foi vista por muitos cidadãos como um símbolo de um sistema judicial distante, autoritário e assustador. Contudo, do ponto de vista técnico, o projeto apresentou pontos positivos inegáveis: as fendas estreitas e as paredes maciças de betão revelaram-se extraordinariamente eficientes em termos de isolamento térmico, reduzindo drasticamente os custos de aquecimento durante os invernos gelados de Buffalo, e o seu sistema de segurança interna provou ser inviolável ao longo das décadas.</p>`,
+    t3: `<p>O Buffalo City Court Building conclui-se como um dos exemplos mais puros, intransigentes e honestos do brutalismo judicial americano. Ele não tenta agradar ao olhar do transeunte nem disfarçar a sua função com ornamentos; assume-se de forma nua como uma fortaleza protetora da lei e da ordem. Ao priorizar a segurança máxima, a eficiência energética e a funcionalidade interna em detrimento da estética decorativa tradicional, o gabinete Pfohl, Roberts & Biggie criou uma escultura monumental de betão que permanece como um documento histórico fascinante de uma era em que a arquitectura foi chamada a desenhar a própria imagem da estabilidade do Estado.</p>`
+  },
+  velasca: {
+    img: 'Predios/Torre Valesca/valasca (6).jpg',
+    title: 'TORRE VELASCA',
+    meta: `Local de Construção: Milão, Itália<br>Arquitecto: Estúdio BBPR (Banfi, Belgiojoso, Peressutti & Rogers)<br>Ano de Construção: 1958`,
+    t1: `<p>A história da Torre Velasca está enraizada no vibrante e complexo período de reconstrução pós-guerra em Milão. Após os severos bombardeamentos que destruíram grande parte do centro histórico da cidade na Segunda Guerra Mundial, a comunidade arquitectónica italiana viu-se perante um dilema: abraçar o modernismo internacional de linhas de vidro e aço ou honrar o rico passado histórico da cidade. O estúdio BBPR optou corajosamente por uma terceira via. Encomendada pela prestigiada empresa Società Generale Immobiliare, a torre foi batizada em homenagem a Juan de Velasco, um governador espanhol do século XVII, e nasceu para ser um manifesto contra a monotonia do estilo internacional, provando que a modernidade e a tradição podiam coexistir.</p>`,
+    body1: `<p>A construção da Torre Velasca foi um marco tecnológico para a engenharia italiana dos anos 50. Com cerca de 100 metros de altura, a estrutura destaca-se pela sua silhueta dramática que evoca a forma de um cogumelo ou de uma fortaleza medieval. O maior desafio de engenharia foi a transição entre o corpo inferior e o superior: os últimos andares expandem-se para fora, sendo sustentados por uma coroa de imponentes contrafortes e vigas oblíquas de betão armado que ficam totalmente visíveis na fachada. Ao contrário do brutalismo tradicional que utiliza apenas o betão cinzento puro, a massa da Torre Velasca foi misturada com agregados de pedra avermelhada e painéis de enchimento texturados, permitindo que o edifício mudasse de tom dependendo da luz do sol e se misturasse com o mar de telhados de tijolo de Milão.</p>`,
+    imgMid: 'Predios/Torre Valesca/valasca (2).jpg',
+    imgBottom: 'Predios/Torre Valesca/valasca (8).jpg',   // COLOCA AQUI: ex: 'Predios/Torre Valesca/valasca (X).jpg'
+    slides: [
+      'Predios/Torre Valesca/valasca (1).jpg',  // imagem 1
+      'Predios/Torre Valesca/valasca (3).jpg',  // imagem 2
+      'Predios/Torre Valesca/valasca (4).jpg',  // imagem 3
+      'Predios/Torre Valesca/valasca (5).jpg',  // imagem 4
+      'Predios/Torre Valesca/valasca (7).jpg',  // imagem 5
+    ],
+    t2: `<p>Espacialmente, a organização das plantas da torre é uma resposta genial à funcionalidade urbana mista. O formato em cogumelo não foi um mero capricho estético; ele reflete perfeitamente o programa interno do edifício. Os primeiros 18 andares, mais estreitos, foram projetados para abrigar lojas, escritórios e estúdios profissionais, que beneficiavam do contacto direto com a rua. Os andares superiores (do 19º ao 26º), que se expandem sobre a cidade, foram dedicados exclusivamente a apartamentos residenciais de luxo. Esta secção alargada permitiu criar plantas residenciais muito mais amplas, privadas e silenciosas, com varandas embutidas que oferecem vistas panorâmicas deslumbrantes sobre a Catedral de Milão (Duomo), isolando os moradores do barulho do tráfego urbano lá em baixo. A inauguração da Torre Velasca em 1958 desencadeou uma das maiores reviravoltas e debates intelectuais da história da arquitectura europeia.</p>`,
+    body2: `<p>Inicialmente, o edifício foi recebido com choque e duras críticas por parte da vanguarda modernista internacional. Na altura, durante o Congresso do CIAM (Congresso Internacional de Arquitectura Moderna), críticos influentes acusaram o estúdio BBPR de "traição ao modernismo" e de criar um monstro "neo-liberty" ou "passadista", devido à óbvia semelhança da torre com o Castelo Sforzesco de Milão. Contudo, os pontos positivos e o tempo deram razão aos arquitectos: a integração cromática e histórica do edifício provou ser impecável, e a sua estrutura mista de escritórios e habitação funcionou perfeitamente ao longo das décadas.</p>`,
+    t3: `<p>A Torre Velasca conclui-se como um dos maiores triunfos do brutalismo contextual e da arquitectura moderna italiana. O estúdio BBPR demonstrou de forma brilhante que o betão armado e a engenharia pesada podem ser usados para dialogar de forma poética com a história de uma cidade antiga, sem cair na cópia barata do passado. Ao esculpir uma fortaleza vertical que reinterpreta o perfil medieval milanês através de uma geometria crua e arrojada, a Torre Velasca conquistou o estatuto de monumento nacional protegido e permanece, ainda hoje, como um dos símbolos mais icónicos, debatidos e orgulhosos do horizonte de Milão.</p>`
+  },
+  palace: {
+    img: 'Predios/Palace of the Assembly/Palace (9).jpg',
+    title: 'PALACE OF ASSEMBLY',
+    meta: `Local de Construção: Chandigarh, Punjab/Haryana, Índia<br>Arquitecto: Le Corbusier<br>Ano de Construção: 1962`,
+    t1: `<p>A história do Palace of Assembly (Palácio da Assembleia) está profundamente ligada ao nascimento de uma nova era para a Índia. Após a sangrenta partilha do território em 1947, a província do Punjab perdeu a sua antiga capital, Lahore, para o Paquistão. O primeiro-ministro indiano, Jawaharlal Nehru, decidiu então criar uma nova capital do zero, Chandigarh, que deveria ser um símbolo de uma Índia moderna, secular, virada para o futuro e livre das amarras do passado colonial. Para liderar este plano urbanístico monumental, Nehru convidou Le Corbusier. O arquitecto franco-suíço viu em Chandigarh a oportunidade perfeita para aplicar as suas teorias urbanas à escala macro, tornando o Palácio da Assembleia o coração legislativo e o expoente máximo deste novo centro de poder.</p>`,
+    body1: `<p>A construção do edifício foi um feito herculâneo que adaptou a crueza do brutalismo ocidental à realidade e ao clima extremo da Índia. Erguido inteiramente em betão bruto (béton brut), o palácio destaca-se pela sua cobertura monumental em forma de pórtico curvo — que lembra a sela de um cavalo ou a proa de um navio —, projetada para sombrear a fachada e canalizar os ventos da região. A obra dependeu do trabalho manual de milhares de operários locais que moldavam o betão sob o sol escaldante, deixando aparentes as texturas ásperas e imperfeitas das formas de madeira cravadas na pele do edifício. Para além do betão cinzento, Le Corbusier introduziu uma enorme porta de aço esmaltado com pinturas abstratas coloridas, um presente do próprio arquitecto para o povo indiano.</p>`,
+    imgMid: 'Predios/Palace of the Assembly/Palace (8).jpg',
+    imgBottom: 'Predios/Palace of the Assembly/Palace (4).jpg',   // COLOCA AQUI: ex: 'Predios/Palace of the Assembly/Palace (X).jpg'
+    slides: [
+      'Predios/Palace of the Assembly/palace (5).jpg',  // imagem 1
+      'Predios/Palace of the Assembly/palace (6).jpg',  // imagem 2
+      'Predios/Palace of the Assembly/palace (7).jpg',  // imagem 3
+      'Predios/Palace of the Assembly/palace (1).jpg',  // imagem 4
+      'Predios/Palace of the Assembly/palace (2).jpg',  // imagem 5
+    ],
+    t2: `<p>Espacialmente, a organização das plantas do Palace of Assembly é de uma genialidade geométrica impressionante. O edifício organiza-se em torno de um vasto salão hipostilo (um pátio interior repleto de colunas de betão) que funciona como um espaço de transição e debate informal para os políticos. O coração do projeto é a câmara legislativa principal, cuja planta circular é coroada por uma gigantesca estrutura hiperbólica na cobertura, que se assemelha a uma torre de refrigeração industrial. Este teto cilíndrico oblíquo estende-se para o céu e foi desenhado com uma claraboia que atua como um autêntico relógio solar, captando a luz do dia e projetando raios dramáticos diretamente sobre o plenário, simbolizando a iluminação da justiça e da democracia. O complexo espelha-se ainda num enorme lago artificial frontal, planeado geometricamente para duplicar visualmente o peso da estrutura.</p>`,
+    body2: `<p>A receção do projeto ao longo dos anos reuniu grandes pontos positivos, mas também reviravoltas na sua utilização e críticas funcionais severas. Inicialmente, o palácio foi aclamado mundialmente pela crítica de arquitectura como uma das maiores composições esculturais do século XX. Contudo, no plano prático e climático, o edifício enfrentou duras críticas: as imensas superfícies de betão bruto tendiam a acumular o calor sufocante do verão indiano, tornando os espaços interiores dependentes de ar condicionado pesado, e o betão sofreu desgaste precoce com as chuvas de monção. Além disso, a reviravolta geopolítica da região transformou o palácio num espaço de permanente tensão, já que o edifício passou a ser partilhado pelas assembleias de dois estados diferentes (Punjab e Haryana), obrigando à criação de divisórias internas artificiais e fortes medidas de segurança militarizadas que quebraram a fluidez espacial original projetada por Le Corbusier.</p>`,
+    t3: `<p>O Palace of Assembly conclui-se como um dos manifestos mais teatrais, poéticos e imponentes do brutalismo universal. Le Corbusier provou que os edifícios governamentais não precisavam de colunas neoclássicas ou de ornamentos imperiais para transmitir autoridade e solenidade. Ao esculpir uma fortaleza de betão que desafia a luz solar e celebra as formas geométricas puras, o palácio transcendeu a sua função política para se tornar um monumento intemporal à audácia humana e um Património Mundial da UNESCO que continua a magnetizar designers e arquitectos de todo o mundo.</p>`
+  },
+  fau: {
+    img: 'C:/Users/gabri/OneDrive/Área de Trabalho/SITE/Predios/Fau usp/fau (4).jpg',          // exterior pilotis + árvores - topo esquerda
+    imgMid: 'Predios/Fau usp/fau (6).jpg',       // interior rampas + tecto pirâmides - meio direita
+    imgBottom: 'Predios/Fau usp/fau (7).jpg',    // estudante na rampa - baixo esquerda
+    slides: [
+      'Predios/Fau usp/fau (1).jpg',   // corte técnico
+      'Predios/Fau usp/fau (2).jpg',   // croquis de Artigas
+      'Predios/Fau usp/fau (3).jpg',   // esquema de distribuição
+      'Predios/Fau usp/fau (5).jpg',   // pilotis trapezoidal + jardim
+      'Predios/Fau usp/fau (8).jpg',   // grande interior tecto pirâmides
+      'Predios/Fau usp/fau (9).jpg',   // plantas técnicas
+      'Predios/Fau usp/fau (10).jpg',   // vista aérea
+    ],
+    title: 'FAU-USP',
+    meta: `Local de Construção: São Paulo, Brasil<br>Arquitecto: João Batista Vilanova Artigas e Carlos Cascaldi<br>Ano de Construção: 1969 (projeto de 1961)`,
+    t1: `<p>A história do edifício da FAU-USP (Faculdade de Arquitectura e Urbanismo da Universidade de São Paulo) está profundamente ligada ao surgimento da chamada "Escola Paulista" e ao ambiente de intensa efervescência intelectual e política dos anos 60 no Brasil. Vilanova Artigas, um dos arquitectos mais influentes do país e militante convicto, foi convidado para desenhar a nova sede da faculdade na Cidade Universitária. Ele não queria apenas projetar um local de aulas, mas sim materializar a sua visão de ensino democrático. O edifício nasceu para ser um manifesto espacial contra o isolamento e as barreiras sociais, refletindo o desejo de criar um espaço de debate livre e formação de cidadãos conscientes, ironicamente planeado mesmo antes do golpe militar de 1964.</p>`,
+    body1: `<p>A construção do edifício foi um marco histórico no uso do betão armado no Brasil, demonstrando uma audácia estrutural impressionante. O prédio apresenta-se exteriormente como um enorme bloco retangular suspenso, que parece flutuar sobre o terreno graças ao apoio de apenas 14 pilares externos com uma geometria trapezoidal/triangular fascinante. A fundição do betão foi feita de forma a deixar aparentes as texturas rugosas das formas de madeira e dos agregados brutos. A fachada exterior é revestida por placas de betão pré-moldado com aberturas geométricas, e o teto do edifício é composto por uma monumental grelha de betão com dezenas de claraboias piramidais de fibra de vidro, que inundam o interior com uma luz natural suave e difusa, protegendo o espaço das chuvas tropicais.</p>`,
+    
+    t2: `<p>Espacialmente, a organização das plantas da FAU-USP é considerada uma obra-prima da continuidade espacial e da fluidez. Artigas eliminou completamente as portas de entrada e as paredes divisórias tradicionais nas áreas comuns. O edifício organiza-se em torno de um vasto pátio central coberto, carinhosamente apelido de "Salão Caramujo". A circulação vertical não é feita por elevadores ou escadas fechadas, mas sim por um sistema monumental de rampas largas e sinuosas que ligam os seis pisos intermédios. As plantas dos estúdios de desenho e salas de aula são abertas e viradas para este grande vazio central. Esta geometria força o contacto visual constante: quem está no topo consegue ver quem debate no pátio, transformando o prédio num espaço de convivência e partilha contínua.</p>`,
+    body2: `<p>A trajetória do edifício foi marcada por dramáticas reviravoltas políticas e críticas funcionais ao longo das décadas. Pouco após a conclusão da obra em 1969, a ditadura militar promulgou o AI-5 e o próprio arquitecto, Vilanova Artigas, foi cassado e afastado da universidade que tinha acabado de construir, gerando uma enorme onda de revolta e tristeza na comunidade académica. No plano prático, o edifício também enfrentou críticas severas: a ausência de portas e paredes gerava problemas graves de acústica (o som do pátio ecoava pelas salas de aula) e o envelhecimento das claraboias originais provocou infiltrações crónicas durante as tempestades paulistas. Contudo, os pontos positivos superaram tudo: a sua espacialidade icónica fomentou um espírito comunitário e estudantil tão forte que o prédio se tornou o símbolo máximo da resistência política e da vanguarda da arquitectura brasileira.</p>`,
+    t3: `<p>A FAU-USP conclui-se como um dos manifestos mais poéticos, generosos e humanos do brutalismo mundial. Vilanova Artigas e Carlos Cascaldi provaram que o betão bruto e as formas monumentais e pesadas não servem apenas para criar fortalezas opressivas, mas também podem ser usados para desenhar a própria liberdade e a igualdade social. Ao transformar uma faculdade numa praça pública coberta e sem portas, a FAU-USP permanece como uma referência imaculada de design ético e espacial, classificada como património histórico, que continua a educar e a inspirar gerações de arquitectos pelo mundo fora.</p>`
+  },
+  blocos: {
+    img: 'Predios/Blocos F, G e I da 107 Norte/blocos (5).jpg',        // pilares PB betão - topo esquerda
+    imgMid: 'Predios/Blocos F, G e I da 107 Norte/blocos (1).jpg',     // diagrama axonométrico - meio direita
+    imgBottom: 'Predios/Blocos F, G e I da 107 Norte/blocos (4).jpg',  // interior apartamento - baixo esquerda
+    slides: [
+      'Predios/Blocos F, G e I da 107 Norte/blocos (2).jpg',  // construção anos 60
+      'Predios/Blocos F, G e I da 107 Norte/blocos (3).jpg',  // sinalética F G H I
+      'Predios/Blocos F, G e I da 107 Norte/blocos (2).avif',  // pátio exterior
+      'Predios/Blocos F, G e I da 107 Norte/blocos (6).jpg',  // fachada lateral betão
+      'Predios/Blocos F, G e I da 107 Norte/blocos (1).avif',  // vista dupla dos blocos
+    ],
+    title: 'BLOCOS F,G E I DA 107 NORTE',
+    meta: `Local de Construção: Brasília, Distrito Federal, Brasil<br>Arquitecto: Mayumi Watanabe de Souza Lima e Sérgio Souza Lima<br>Ano de Construção: 1968`,
+    t1: `<p>A história dos blocos F, G e I da Superquadra Norte 107 (SQN 107) está inserida no período de consolidação de Brasília, durante o final dos anos 60. Após a inauguração da nova capital em 1960, a urgência em habitar as superquadras da Asa Norte levou a Fundação da Casa Popular e o extinto Instituto de Previdência e Assistência dos Servidores do Estado (IPASE) a encomendar novos projetos residenciais. Para desenhar os blocos da 107 Norte, foram contratados os arquitectos Mayumi Watanabe de Souza Lima — uma das mulheres mais brilhantes e injustamente esquecidas da história da arquitectura brutalista brasileira — e o seu marido, Sérgio Souza Lima. Influenciada pelas discussões sobre a função social da arquitectura e a pedagogia do espaço, Mayumi viu neste projeto a oportunidade única para reinterpretar as regras rígidas do Plano Piloto de Lúcio Costa.</p>`,
+    body1: `<p>A construção destes blocos representou uma audaciosa rutura técnica e estética com os tradicionais prédios sobre pilotis de Brasília. Enquanto a maioria das superquadras da Asa Sul exibia fachadas lisas e volumes puros de betão pintado ou azulejos, os blocos F, G e I da 107 Norte foram erguidos recorrendo ao betão armado aparente e a uma volumetria tridimensional altamente expressiva. O processo construtivo tirou partido de elementos pré-moldados e da plasticidade do betão moldado in loco. A característica mais marcante da fachada é a inclusão de grandes floreiras e caixas de betão integradas que sobressaem da estrutura principal, criando um jogo profundo de luzes e sombras que protege os interiores do forte sol do Planalto Central. Além disso, as fachadas traseiras são marcadas por majestosas escadas circulares e helicoidais em betão esculpido.</p>`,
+    
+    t2: `<p>Espacialmente, a organização das plantas da 107 Norte é um exemplo brilhante de inovação na habitação coletiva. Mayumi e Sérgio Souza Lima rejeitaram a planta de bloco linear com corredores escuros. Os edifícios organizam-se através de passadeiras e passarelas suspensas ao ar livre que ligam os apartamentos, transformando as áreas de circulação em extensões da própria rua e promovendo o encontro entre vizinhos. Os apartamentos possuem plantas inteligentes e vazadas (ventilação cruzada natural), com áreas de serviço generosas e aberturas geométricas dispostas de forma a garantir a privacidade de cada família, sem perder a ligação com a vasta área verde e arborizada da superquadra lá em baixo. Os pilotis, embora mantidos para respeitar o plano da cidade, foram desenhados com uma escala mais próxima e acolhedora para os peões.</p>`,
+    body2: `<p>A trajetória deste complexo habitacional enfrentou reviravoltas na sua valorização e críticas ao longo do tempo. Na altura da construção, o uso do betão bruto e aparente num edifício residencial foi visto por setores mais tradicionais como uma solução "inacabada", "industrial" ou demasiado agressiva para o padrão residencial que se pretendia para a capital. No plano prático, a manutenção das floreiras integradas no betão exigia cuidados constantes com impermeabilização para evitar infiltrações nas estruturas dos apartamentos, o que levou alguns moradores, ao longo dos anos, a descaracterizar as plantas originais retirando a vegetação. Contudo, os pontos positivos foram avassaladores: a qualidade espacial, o conforto térmico proporcionado pelos recuos da fachada e o forte sentido de comunidade gerado pelas passarelas abertas transformaram estes blocos num dos endereços residenciais mais elogiados e cultuados por arquitectos e estudantes em Brasília.</p>`,
+    t3: `<p>Os blocos F, G e I da 107 Norte concluem-se como um dos manifestos mais maduros, poéticos e originais do brutalismo residencial brasileiro. Mayumi e Sérgio Souza Lima provaram que a produção de habitação em massa e o uso do betão bruto não têm de resultar em blocos monótonos ou cinzentos sem identidade. Ao esculpir fachadas dinâmicas que abraçam a vegetação e ao desenhar passarelas que estimulam a convivência humana, os arquitectos deixaram na capital federal uma obra-prima de sensibilidade urbana, demonstrando que o brutalismo pode ser profundamente acolhedor, vivo e focado no bem-estar social.</p>`
+  },
+  habitat: {
+    img: 'Predios/habitat 67/habitat (1).avif',          // retrato Moshe Safdie - topo esquerda (junto ao 1º parágrafo)
+    imgMid: 'Predios/habitat 67/habitat (14).jpg',       // interior cubos+passagens - meio direita (espacialidade)
+    imgBottom: 'Predios/habitat 67/habitat (1).jpg',    // vista lateral + Rio São Lourenço - baixo esquerda
+    slides: [
+      'Predios/habitat 67/habitat (2).jpg',  // fachada frontal cubos + escadas (melhor foto exterior)
+      'Predios/habitat 67/habitat (3).jpg',  // vista panorâmica do rio ao entardecer
+      'Predios/habitat 67/habitat (4).jpg',  // vista da rua com ciclovia + contexto urbano
+      'Predios/habitat 67/habitat (5).jpg',  // cubos + vegetação céu azul
+      'Predios/habitat 67/habitat (7).jpg',  // interior nocturno com luz
+      'Predios/habitat 67/habitat (8).jpg',  // P/B pessoa a caminhar sob os cubos
+      'Predios/habitat 67/habitat (9).jpg',  // escada betão close-up
+      'Predios/habitat 67/habitat (10).jpg',  // terraços vistos de baixo
+      'Predios/habitat 67/habitat (11).jpg',  // planta duplex 2 quartos
+      'Predios/habitat 67/habitat (12).jpg',  // planta duplex 3 quartos
+    ],
+    title: 'HABITAT 67',
+    meta: `Local de Construção: Montreal, Quebec, Canadá<br>Arquitecto: Moshe Safdie<br>Ano de Construção: 1967`,
+    t1: `<p>A história do Habitat 67 confunde-se com a audácia da própria juventude. O projeto nasceu como a tese de mestrado do arquitecto israelita-canadiano Moshe Safdie na McGill University, quando este tinha apenas 23 anos. O que parecia ser apenas um exercício académico utópico ganhou vida quando a organização da Exposição Universal de 1967 (Expo 67) escolheu o conceito inovador de Safdie para ser o pavilhão habitacional principal do evento, cujo tema era "O Homem e o seu Mundo". O objetivo era monumental: repensar completamente a habitação urbana de alta densidade num mundo em rápido crescimento pós-guerra.</p>`,
+    body1: `<p>A construção do Habitat 67 foi um feito revolucionário de engenharia pré-fabricada. No próprio local da obra, foi montada uma fábrica de betão automatizada. Cada apartamento começava como uma "caixa" gigante de betão armado vazia que, após a cura, era movida para a sua posição definitiva por uma grua imensa. No interior da "caixa", uma linha de montagem onde recebia instalações elétricas, canalização, janelas e até cozinhas e casas de banho pré-moldadas em fibra de vidro. Uma grua colossal erguia estas caixas de 85 toneladas, empilhando-as sobre uma estrutura de eixos de aço.</p><p>Ao todo, foram combinados 354 módulos cúbicos para criar 158 residências originais repartidas por três pirâmides de 12 andares. A grande característica do design é o desalinhamento propositado dos cubos: a cobertura de um módulo serve de terraço ajardinado para o apartamento do piso superior. Isso garantia que cada habitação funcionasse como uma casa unifamiliar, com privacidade, luz solar em três frentes e uma vista desimpedida para o Rio São Lourenço, quebrando a monotonia dos blocos de apartamentos tradicionais.</p>`,
+    
+    t2: `<p>O plano original de Safdie previa a construção de mais de 1000 módulos para tornar o projeto economicamente viável e acessível à classe trabalhadora. Contudo, o governo reduziu o orçamento e a escala drasticamente. Como resultado, o custo por unidade disparou, tornando-o um dos projetos habitacionais mais caros da história na altura. Na época da inauguração, críticos rotularam o Habitat de "monstro de betão" ou uma "pilha caótica de blocos". Além disso, os invernos rigorosos de Montreal trouxeram problemas iniciais de infiltrações e isolamento térmico nas juntas entre os blocos pré-fabricados.</p>`,
+    body2: `<p>Apesar das críticas iniciais, o Habitat 67 tornou-se um sucesso absoluto e um símbolo identitário de Montreal. Com o passar das décadas, o edifício provou ser uma utopia habitacional funcional e altamente cobiçada. Hoje, é considerado um monumento histórico nacional e as suas unidades são propriedades de luxo habitadas por uma comunidade artística e intelectual vibrante.</p>`,
+    t3: `<p>O Habitat 67 transcendeu o estatuto de mero pavilhão de exposição para se afirmar como um dos manifestos mais contundentes do metabolismo e do brutalismo arquitectónico. Ele provou que o betão bruto e a produção em massa industrializada não precisam de anular a escala humana, a natureza ou o conforto. O projeto permanece, ainda hoje, como um farol de inspiração para o design urbano sustentável, demonstrando que é possível viver com densidade sem sacrificar a identidade e o bem-estar de cada indivíduo.</p>`
+  },
+  unite: {
+    img: 'Predios/unite d habitacion/unite (2).jpg',
+    title: "UNITÉ D'HABITATION",
+    meta: `Local de Construção: Marselha, França<br>Arquitecto: Le Corbusier<br>Ano de Construção: 1952`,
+    t1: `<p>A história da Unité d'Habitation confunde-se com a própria reconstrução da Europa após a Segunda Guerra Mundial. Com a França devastada pelo conflito e a sofrer de uma crise habitacional severa, o Ministério da Reconstrução encomendou a Le Corbusier um projeto inovador de habitação social em Marselha. O arquitecto franco-suíço, já uma figura cimeira do Movimento Moderno, viu aqui a oportunidade perfeita para materializar as suas teorias urbanísticas acumuladas ao longo de três décadas. O objetivo era criar a Cité Radieuse (Cidade Radiante): um modelo habitacional coletivo capaz de oferecer dignidade, espaço e luz à classe trabalhadora, integrando a vida privada e a vida comunitária num único organismo edificado.</p>`,
+    body1: `<p>A construção da Unité d'Habitation introduziu uma das maiores revoluções estéticas do século XX: o nascimento do Brutalismo. Originalmente, Le Corbusier pretendia utilizar uma estrutura de aço com painéis pré-fabricados, mas a escassez de aço no pós-guerra forçou-o a recorrer ao betão armado. O arquitecto decidiu assumir as imperfeições do material e deixar visíveis as marcas das formas de madeira utilizadas para moldar a estrutura. Esta técnica, que ele batizou de béton brut (betão bruto), acabou por batizar todo o movimento arquitectónico. O gigantesco bloco de 18 andares eleva-se do chão sustentado por imponentes pilotis (pilares cónicos de betão), libertando o solo para a circulação de peões e viaturas.</p>`,
+    imgMid: 'Predios/unite d habitacion/unite (9).jpg',
+    imgBottom: 'Predios/unite d habitacion/unite (8).jpg',   // COLOCA AQUI: ex: 'Predios/unite d habitacion/unite (X).jpg'
+    slides: [
+      'Predios/unite d habitacion/unite (1).jpg',  // imagem 1
+      'Predios/unite d habitacion/unite (3).jpg',  // imagem 2
+      'Predios/unite d habitacion/unite (4).jpg',  // imagem 3
+      'Predios/unite d habitacion/unite (5).jpg',  // imagem 4
+      'Predios/unite d habitacion/unite (10).jpg',  // imagem 5
+    ],
+    t2: `<p>A construção da Unité d'Habitation introduziu uma das maiores revoluções estéticas do século XX: o nascimento do Brutalismo. Originalmente, Le Corbusier pretendia utilizar uma estrutura de aço com painéis pré-fabricados, mas a escassez de aço no pós-guerra forçou-o a recorrer ao betão armado. O arquitecto decidiu assumir as imperfeições do material e deixar visíveis as marcas das formas de madeira utilizadas para moldar a estrutura. Esta técnica, que ele batizou de béton brut (betão bruto), acabou por batizar todo o movimento arquitectónico. O gigantesco bloco de 18 andares eleva-se do chão sustentado por imponentes pilotis (pilares cónicos de betão), libertando o solo para a circulação de peões e viaturas.</p><p>Para além das residências, o projeto integrou funções públicas inéditas num prédio de habitação. No 7º e 8º andares, Le Corbusier desenhou uma "rua comercial" com lojas, mercearia, livraria, hotel e restaurante. O ponto alto da organização espacial situa-se na cobertura: um terraço público monumental que funciona como uma praça suspensa sobre o mar Mediterrâneo. Este espaço comum foi dotado de uma pista de corrida, uma piscina infantil e um teatro ao ar livre, emoldurados por gigantescas chaminés de ventilação escultóricas que parecem obras de arte abstratas.</p>`,
+    body2: `<p>Apesar de todas as críticas iniciais, a Unité d'Habitation provou ser um sucesso sociológico e arquitectónico estrondoso. O edifício estabeleceu um novo padrão global para a arquitectura habitacional de alta densidade e influenciou projetos por todo o mundo. A comunidade de residentes desenvolveu um espírito de vizinhança extraordinário e o edifício tornou-se num dos locais mais orgulhosos de Marselha. Hoje, a Cité Radieuse está classificada como Património Mundial da UNESCO, atraindo arquitectos e turistas de todo o planeta, e os seus apartamentos são altamente valorizados no mercado.</p>`,
+    t3: `<p>A Unité d'Habitation de Marselha permanece como o manifesto definitivo da maturidade de Le Corbusier e o berço do brutalismo. Ela demonstrou que a arquitectura em massa pode ser profundamente poética, funcional e artística. Ao elevar o betão bruto ao estatuto de material nobre e ao colocar as necessidades do ser humano no centro da geometria, Le Corbusier não criou apenas um prédio, mas sim um monumento à utopia da convivência social que continua a inspirar designers e urbanistas contemporâneos.</p>`
+  },
+  barbican: {
+    img: 'Predios/Barbican center/barbican center  (2).avif',       // corredor pilotis - topo esquerda (junto ao 1º texto)
+    imgMid: 'Predios/Barbican center/barbican center  (5).avif',    // vista lago+fachada - meio direita
+    imgBottom: 'Predios/Barbican center/barbican center  (6).avif', // pilares lagos escuros - baixo esquerda
+    slides: [
+      'Predios/Barbican center/barbican center  (1).jpg',  // maquete
+      'Predios/Barbican center/barbican  center   (10).jpg',  // planta geral
+      'Predios/Barbican center/barbican center  (1).avif',  // detalhe fachada dourada
+      'Predios/Barbican center/barbican center  (2).jpg',  // vista lago ao pôr do sol
+      'Predios/Barbican center/barbican center  (3).avif',  // passadiço interior
+      'Predios/Barbican center/barbican center  (4).avif',  // pátio residencial
+      'Predios/Barbican center/barbican center  (7).avif',  // vista aérea lago+blocos
+      'Predios/Barbican center/barbican center  (8).avif',  // lago com fonte
+      'Predios/Barbican center/barbican center  (9).avif',  // detalhe varandas betão
+    ],
+    title: 'BARBICAN CENTER',
+    meta: `Local de Construção: Londres, Reino Unido<br>Arquitecto: Chamberlin, Powell and Bon<br>Ano de Construção: 1982 (complexo residencial a partir de 1969)`,
+    t1: `<p>A história do Barbican Centre está intrinsecamente ligada a um dos períodos mais sombrios e, posteriormente, mais ambiciosos da história de Londres. Durante a Segunda Guerra Mundial, a zona do Barbican (que deve o seu nome a uma antiga muralha de vigia romana) foi completamente arrasada pelos bombardeamentos alemães do Blitz, restando apenas ruínas fumegantes. Em meados dos anos 50, a City of London Corporation decidiu reerguer a área não com escritórios, mas com uma visão utópica: um complexo residencial de alta densidade que trouxesse a vida civil de volta ao centro financeiro. Seguindo este manifesto de modernidade, foi contratado o jovem gabinete de arquitectos Chamberlin, Powell and Bon, que via no betão a matéria-prima ideal para moldar uma nova cultura social e cultural britânica.</p>`,
+    body1: `<p>A construção do Barbican foi uma das maiores operações de engenharia civil da Europa no pós-guerra e demorou quase três décadas a ser totalmente concluída. O complexo destaca-se pelo seu acabamento de betão absolutamente único. Em vez de apresentar uma superfície lisa, os arquitectos queriam uma textura áspera, esculpida e orgânica. Para isso, equipas de operários utilizaram martelos pneumáticos e picaretas manuais para picotar toda a superfície do betão (bush-hammering), expondo os agregados de granito no interior da massa. O complexo foi desenhado como uma verdadeira fortaleza fortificada, separando os peões do tráfego automóvel através de um sistema de "pódios" (passadeiras elevadas) e organizando-se em redor de um imenso lago artificial. O projeto culminou com a construção de três das torres residenciais mais altas da Europa na altura — as torres Shakespeare, Lauderdale e Cromwell —, que se erguem a mais de 120 metros com varandas dramáticas em forma de ponta de seta.</p>`,
+    
+    t2: `<p>Espacialmente, as plantas do Barbican são um prodígio de complexidade geométrica e funcionalismo. O complexo abriga cerca de 2.000 apartamentos com mais de 100 tipologias diferentes, desde estúdios compactos a penthouses luxuosas. No interior dos apartamentos, as cozinhas e casas de banho foram projetadas como cabines modulares aerodinâmicas (inspiradas no design de navios e aviões) para maximizar o espaço. No coração desta megaestrutura encontra-se o centro cultural (o Barbican Centre propriamente dito), cuja planta subterrânea e labiríntica engloba uma das maiores salas de concertos de Londres, teatros, cinemas e uma biblioteca pública. Uma das maiores inovações do espaço é o Barbican Conservatory, uma enorme estufa monumental de vidro colocada no topo do teatro que abriga milhares de espécies de plantas tropicais, criando um ecossistema exótico que cresce diretamente sobre as vigas brutas de betão.</p>`,
+    body2: `<p>A construção e inauguração do Barbican foram marcadas por fortes reviravoltas, críticas ferozes e atrasos massivos. Devido à sua escala sem precedentes e às dificuldades técnicas da obra, o projeto ultrapassou gravemente os prazos e os orçamentos originais, gerando escândalos políticos na época. Quando foi inaugurado oficialmente pela Rainha Isabel II em 1982, a opinião pública dividiu-se drasticamente. O público e os críticos britânicos detestavam o edifício inicialmente, apelidando-o de "monstro cinzento", "bunker nuclear" ou "a coisa mais feia de Londres". A sua escala gigantesca e o layout labiríntico faziam com que as pessoas se perdessem constantemente nos corredores escuros de betão, o que lhe valeu a reputação de ser uma distopia arquitectónica opressiva.</p>`,
+    t3: `<p>Apesar do ódio inicial, o Barbican viveu uma das maiores reviravoltas de reputação da história da arquitectura. Com o passar das décadas, a sua visão utópica provou ser incrivelmente funcional e segura. A ausência de carros ao nível dos peões, a qualidade acústica do betão espesso e a integração perfeita com a cultura transformaram o complexo num dos locais mais desejados e caros para viver em Londres. Hoje em dia, os apartamentos são tão cobiçados pela elite criativa e o Barbican é classificado como Monumento Nacional de Grau I, sendo celebrado mundialmente como a joia da coroa do brutalismo britânico.</p>`
+  }
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ---- SLIDESHOW STATE ----
+let slideIndex = 0;
+let slideImages = [];
+let slidePositions = [];
+
+function buildSlideshow(imgs, positions) {
+  slideImages = imgs;
+  slidePositions = positions || imgs.map(() => 'center');
+  slideIndex = 0;
+  renderSlide(false);
+  // Build dots
+  const dots = document.getElementById('arch-dots');
+  dots.innerHTML = '';
+  imgs.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'arch-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goSlide(i);
+    dots.appendChild(d);
+  });
+}
+
+function renderSlide(animate) {
+  const img = document.getElementById('arch-slide-img');
+  if (animate) {
+    img.classList.add('slide-out');
+    setTimeout(() => {
+      img.src = slideImages[slideIndex];
+      img.style.objectPosition = slidePositions[slideIndex];
+      img.classList.remove('slide-out');
+    }, 280);
+  } else {
+    img.src = slideImages[slideIndex];
+    img.style.objectPosition = slidePositions[slideIndex];
+  }
+  document.querySelectorAll('.arch-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === slideIndex);
+  });
+}
+
+function slideNext() {
+  slideIndex = (slideIndex + 1) % slideImages.length;
+  renderSlide(true);
+}
+
+function slidePrev() {
+  slideIndex = (slideIndex - 1 + slideImages.length) % slideImages.length;
+  renderSlide(true);
+}
+
+function goSlide(i) {
+  slideIndex = i;
+  renderSlide(true);
+}
+
+// ---- NAV ----
+function navTo(section) {
+  const homePage = document.getElementById('page-home');
+  const isHome = homePage.classList.contains('active');
+  if (isHome) {
+    // Already on home — scroll to section
+    const el = document.getElementById('sec-' + section);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    // Go home first then scroll
+    showPage('home');
+    setTimeout(() => {
+      const el = document.getElementById('sec-' + section);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 80);
+  }
+}
+
+function showDetalhe(id) {
+  const b = buildings[id];
+  if (!b) return;
+
+  document.getElementById('d-title').textContent = b.title;
+  document.getElementById('d-meta').innerHTML = b.meta;
+
+  // Top: img + first text
+  document.getElementById('d-img-top').src = b.img;
+  document.getElementById('d-img-top').style.height = '260px';
+  document.getElementById('d-text-1').innerHTML = b.t1;
+
+  // Body 1
+  document.getElementById('d-body-1').innerHTML = b.body1 || '';
+
+  // Mid: text + img
+  const imgMid = document.getElementById('d-img-mid');
+imgMid.src = b.imgMid || '';
+imgMid.style.display = b.imgMid ? 'block' : 'none';
+imgMid.style.height = '280px';
+imgMid.style.objectPosition = 'center 30%';
+document.getElementById('d-text-2').innerHTML = b.t2 || '';
+  // Body 2
+  document.getElementById('d-body-2').innerHTML = b.body2 || '';
+
+  // Bottom: img + text
+  const bottomImg = b.imgBottom || b.img;
+  document.getElementById('d-img-bottom').src = bottomImg;
+  document.getElementById('d-img-bottom').style.height = '260px';
+  document.getElementById('d-img-bottom').style.objectPosition = 'center 60%';
+  document.getElementById('d-text-3').innerHTML = b.t3 || '';
+
+  // Slideshow: use building-specific slides if available, else crop same image
+  const slides = b.slides || [b.img, b.img, b.img];
+  const positions = b.slides ? slides.map(() => 'center') : ['center top', 'center 40%', 'center bottom'];
+  buildSlideshow(slides, positions);
+
+  showPage('detalhe');
+}
+
+// ---- HERO SLIDESHOW ----
+let heroIdx = 0;
+const heroTotal = 7;
+let heroTimer = null;
+
+function heroSlide(dir) {
+  heroGo((heroIdx + dir + heroTotal) % heroTotal);
+}
+
+function heroGo(i) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  if (!slides.length) return;
+  slides[heroIdx].classList.remove('active');
+  dots[heroIdx].classList.remove('active');
+  heroIdx = i;
+  slides[heroIdx].classList.add('active');
+  dots[heroIdx].classList.add('active');
+  resetHeroTimer();
+}
+
+function resetHeroTimer() {
+  if (heroTimer) clearInterval(heroTimer);
+  heroTimer = setInterval(() => heroSlide(1), 4500);
+}
+
+resetHeroTimer();
+</script>
+</body>
+</html>
